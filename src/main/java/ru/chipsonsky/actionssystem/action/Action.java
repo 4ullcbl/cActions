@@ -2,8 +2,8 @@ package ru.chipsonsky.actionssystem.action;
 
 /*
 actions:
-  - "[BROADCAST] Hello from action!"
-  - "[COMMAND] kill @e"
+  - "[broadcast] Hello from action!"
+  - "[command] kill @e"
  */
 
 import lombok.Builder;
@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 @Getter
 public class Action {
     private final String name;
-    private final Set<String> aliases;
+    @Setter private Set<String> aliases;
     @Setter protected BiConsumer<ActionArguments, ActionContext> onExecute;
     @Setter protected boolean cancelled = false;
 
@@ -36,5 +36,9 @@ public class Action {
         this.onExecute = onExecute;
         this.aliases = aliases;
         this.aliases.add(name);
+    }
+
+    public boolean addAlias(String alias) {
+        return this.aliases.add(alias);
     }
 }

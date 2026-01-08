@@ -5,6 +5,7 @@ import ru.chipsonsky.actionssystem.action.registry.api.MapRegistry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class MapRegistryImpl<K, V> implements MapRegistry<K, V> {
     private final Map<K, V> items = new HashMap<>();
@@ -17,6 +18,11 @@ public class MapRegistryImpl<K, V> implements MapRegistry<K, V> {
     @Override
     public void unregister(K key) {
         items.remove(key);
+    }
+
+    @Override
+    public void forEach(BiConsumer<K, V> action) {
+        items.forEach(action);
     }
 
     @Override
