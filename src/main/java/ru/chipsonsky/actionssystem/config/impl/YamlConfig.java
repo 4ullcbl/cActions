@@ -22,17 +22,18 @@ public class YamlConfig implements CustomConfig {
         this.file = new File(this.plugin.getDataFolder(), this.name);
         if (!this.file.exists()) {
             //noinspection ResultOfMethodCallIgnored
-            this.file.mkdirs();
+            this.plugin.getDataFolder().mkdirs();
             plugin.saveResource(this.name, false);
         }
 
         this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
-    public void reload() {
+    @Override
+    public void reloadConf() {
         if (!this.file.exists()) {
             //noinspection ResultOfMethodCallIgnored
-            this.file.mkdirs();
+            this.plugin.getDataFolder().mkdirs();
             this.plugin.saveResource(this.name, true);
         }
         try {

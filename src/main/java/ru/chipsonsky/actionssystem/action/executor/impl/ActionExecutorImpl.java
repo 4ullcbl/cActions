@@ -30,7 +30,7 @@ public class ActionExecutorImpl implements ActionExecutor {
         final String[] argsWithoutName = String.join(" ", input.subList(1, input.size())).split(BETWEEN_REGEX);
 
         for (int i = 0; i < argsWithoutName.length; i++) {
-            if (action.getAliases().size() <= i)
+            if (action.getArguments().size() <= i)
                 break;
 
             arguments.put(action.getArguments().get(i), argsWithoutName[i]);

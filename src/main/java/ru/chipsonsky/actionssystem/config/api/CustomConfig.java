@@ -8,4 +8,6 @@ public interface CustomConfig {
     File getFile();
 
     FileConfiguration getConf();
+
+    void reloadConf();
 }

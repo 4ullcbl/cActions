@@ -6,4 +6,5 @@ broadcast:
 command:
   - "cmd"
 
-
+test:
+  - "tests"
