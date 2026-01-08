@@ -1,0 +1,12 @@
+name: cActions
+version: 26.1-SNAPSHOT-1
+main: ru.chipsonsky.actionssystem.ActionPlugin
+description: Plugin added action system
+author: chipsonsky
+website: https://trident.su
+api-version: '1.20.4'
+
+commands:
+  action:
+    usage: "/action list|execute|exlist <action> For example: /action [BROADCAST] hello"
+    permission: "cactions.command"
