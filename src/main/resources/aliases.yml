@@ -1,10 +1,8 @@
 # you can add new aliases for any action
 
-broadcast:
+log:
+  - "logger"
   - "print"
 
-command:
-  - "cmd"
-
-test:
-  - "tests"
+broadcast:
+  - "server-msg"

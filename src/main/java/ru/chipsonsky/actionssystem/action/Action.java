@@ -11,11 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.chipsonsky.actionssystem.action.arguments.ActionArguments;
 import ru.chipsonsky.actionssystem.action.context.ActionContext;
+import ru.chipsonsky.actionssystem.action.registry.ActionRegistry;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 @Getter
@@ -48,12 +46,56 @@ public class Action {
         arguments.add(argument);
     }
 
+    public static Register registrator() {
+        return new Register();
+    }
+
     @Override
     public String toString() {
-        return "action name: " + name +
-                "\nexecutor: " + onExecute +
-                "\naliases: " + aliases +
-                "\narguments: " + arguments
+        return "<yellow>action name: <white>" + name +
+                "\n<yellow>aliases: <white>" + aliases +
+                "\n<yellow>arguments: <white>" + arguments
                 ;
+    }
+
+    public static class Register {
+        private String name;
+        private final List<String> arguments = new ArrayList<>();
+        private final Set<String> aliases = new HashSet<>();
+        private BiConsumer<ActionArguments, ActionContext> onExecute;
+
+        public Register create(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Register argument(String arg) {
+            this.arguments.add(arg);
+            return this;
+        }
+
+        public Register arguments(String... args) {
+            this.arguments.addAll(Arrays.asList(args));
+            return this;
+        }
+
+        public Register alias(String alias) {
+            this.aliases.add(alias);
+            return this;
+        }
+
+        public Register onExecute(BiConsumer<ActionArguments, ActionContext> consumer) {
+            this.onExecute = consumer;
+            return this;
+        }
+
+        public void register() {
+            final Action action = new Action(name, onExecute, aliases);
+            for (String argument : arguments) {
+                action.argument(argument);
+            }
+
+            ActionRegistry.ACTIONS.register(name, action);
+        }
     }
 }
