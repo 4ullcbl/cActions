@@ -2,6 +2,7 @@ package ru.chipsonsky.actionssystem.action.registry.api;
 
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public interface MapRegistry<K, V> {
@@ -19,4 +20,6 @@ public interface MapRegistry<K, V> {
     V getOrDefault(K key, V value);
 
     Map<K, V> getAll();
+
+   Set<Map.Entry<K, V>> entrySet();
 }

@@ -5,6 +5,7 @@ import ru.chipsonsky.actionssystem.action.registry.api.MapRegistry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public class MapRegistryImpl<K, V> implements MapRegistry<K, V> {
@@ -43,5 +44,10 @@ public class MapRegistryImpl<K, V> implements MapRegistry<K, V> {
     @Override
     public Map<K, V> getAll() {
         return Collections.unmodifiableMap(items);
+    }
+
+    @Override
+    public Set<Map.Entry<K, V>> entrySet() {
+        return items.entrySet();
     }
 }

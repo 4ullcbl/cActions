@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.chipsonsky.actionssystem.utils.parser.api.Parser;
 import ru.chipsonsky.actionssystem.utils.parser.impl.StringParser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

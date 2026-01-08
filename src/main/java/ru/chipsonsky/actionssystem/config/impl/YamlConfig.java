@@ -7,7 +7,6 @@ import org.bukkit.plugin.Plugin;
 import ru.chipsonsky.actionssystem.config.api.CustomConfig;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class YamlConfig implements CustomConfig {
