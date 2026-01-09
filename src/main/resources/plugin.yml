@@ -1,5 +1,5 @@
 name: cActions
-version: 26.1-SNAPSHOT-1
+version: 26.1-SNAPSHOT-2
 main: ru.chipsonsky.actionssystem.ActionPlugin
 description: Plugin added action system
 author: chipsonsky
