@@ -7,59 +7,60 @@ import org.bukkit.Sound;
 import org.bukkit.plugin.Plugin;
 import ru.chipsonsky.actionssystem.action.Action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class DefaultAction {
-    private boolean register = false;
+    private final List<Action> toRegister = new ArrayList<>();
 
-    public void registerAll(Plugin plugin) {
-        if (register) return;
-
+    public DefaultAction(Plugin plugin) {
         logAction(plugin);
         broadcastAction();
         messageAction();
-        commandAction();
         actionBarAction();
-        particleAction();
         soundAction();
-        register = true;
+        particleAction();
+        commandAction();
     }
 
     public void logAction(Plugin plugin) {
-        Action.registrator().create("log")
+        toRegister.add(Action.registrator().create("log")
                 .argument("text")
                 .onExecute((arguments, context) -> plugin.getLogger().info(arguments.get("text", "empty")))
-                .register();
+                .build());
     }
 
     public void broadcastAction() {
-        Action.registrator().create("broadcast")
+        toRegister.add(Action.registrator().create("broadcast")
                 .argument("text")
                 .onExecute(((arguments, context) -> Bukkit.broadcast(MiniMessage.miniMessage().deserialize(arguments.get("text", "empty")))))
-                .register();
+                .build());
     }
 
     public void messageAction() {
-        Action.registrator().create("message")
+        toRegister.add(Action.registrator().create("message")
                 .argument("text")
                 .onExecute(((arguments, context) -> context.player().sendRichMessage(arguments.get("text" , "empty"))))
-                .register();
+                .build());
     }
 
     public void actionBarAction() {
-        Action.registrator().create("action-bar")
+        toRegister.add(Action.registrator().create("action-bar")
                 .argument("text")
                 .onExecute(((arguments, context) -> context.player().sendActionBar(MiniMessage.miniMessage().deserialize(arguments.get("text", "empty")))))
-                .register();
+                .build());
     }
 
     public void commandAction() {
-        Action.registrator().create("command")
+        toRegister.add(Action.registrator().create("command")
                 .argument("command")
                 .onExecute(((arguments, context) -> Bukkit.dispatchCommand(context.player(), arguments.get("command", ""))))
-                .register();
+                .build());
     }
 
     public void particleAction() {
-        Action.registrator().create("particle")
+        toRegister.add(Action.registrator().create("particle")
                 .arguments("type", "count", "xOffset", "yOffset", "zOffset", "extra")
                 .onExecute(((arguments, context) -> {
                     final Particle type = arguments.getParseEnum("type", "FLAME", Particle.class);
@@ -71,11 +72,11 @@ public final class DefaultAction {
 
                     context.getWorld().spawnParticle(type, context.getLocation(), count, xOffset, yOffset, zOffset, extra);
                 }))
-                .register();
+                .build());
     }
 
     public void soundAction() {
-        Action.registrator().create("sound")
+        toRegister.add(Action.registrator().create("sound")
                 .arguments("type", "volume", "pitch")
                 .onExecute(((arguments, context) -> {
                     final String type = arguments.get("type", "UI_BUTTON_CLICK");
@@ -84,6 +85,10 @@ public final class DefaultAction {
 
                     context.getWorld().playSound(context.getLocation(), Sound.valueOf(type), volume, pitch);
                 }))
-                .register();
+                .build());
+    }
+
+    public List<Action> getToRegister() {
+        return Collections.unmodifiableList(toRegister);
     }
 }

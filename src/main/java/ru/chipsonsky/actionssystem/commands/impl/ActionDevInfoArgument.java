@@ -1,8 +1,8 @@
 package ru.chipsonsky.actionssystem.commands.impl;
 
 import org.bukkit.command.CommandSender;
+import ru.chipsonsky.actionssystem.ActionPlugin;
 import ru.chipsonsky.actionssystem.action.Action;
-import ru.chipsonsky.actionssystem.action.registry.ActionRegistry;
 import ru.chipsonsky.actionssystem.commands.api.ArgumentExecutor;
 import ru.chipsonsky.actionssystem.commands.api.TabCompleteArgumentExecutor;
 
@@ -21,7 +21,7 @@ public class ActionDevInfoArgument extends ArgumentExecutor implements TabComple
         if (args.length < 1) return;
 
         final String key = args[1];
-        final Action action = ActionRegistry.ACTIONS.get(key);
+        final Action action = ActionPlugin.getActionAPI().getACTIONS().get(key);
 
         if (action == null) {
             sender.sendRichMessage("<red>Unknown action");
@@ -36,7 +36,7 @@ public class ActionDevInfoArgument extends ArgumentExecutor implements TabComple
     public List<String> complete(CommandSender sender, String[] args) {
         if (args.length == 2) {
             final List<String> arguments = new ArrayList<>();
-            ActionRegistry.ACTIONS.entrySet().forEach(entry -> arguments.add(entry.getKey()));
+            ActionPlugin.getActionAPI().allActions().forEach((name, a) -> arguments.add(name));
             return arguments;
         }
 
