@@ -1,37 +1,58 @@
 # cActions
 Простая система текстовых действий, можно использывать в конфигах, для более настраивамой работы плагинов
+Основной синтаксис: ```[имя-действия] 1 аргумент, 2 аргумент```
+Аргументы раздяляются запятой с пробелом, что позволяет аргументу иметь пробелы
 
-
-Выполнение действия
+настройка проекта
 ```java
-final String actionString = "[command] say hello";  // полученно с конфига или из комманды
+public final class CActionsExample extends JavaPlugin {
 
-ActionSystem.getExecutor().execute(actionString, new ActionContext(player));
-// действие срабатывает 
+    private ActionAPI actionAPI; // основной обьект для работы а API
+
+    @Override
+    public void onEnable() {
+
+        actionAPI = getServer().getServicesManager().load(ActionAPI.class);
+
+        if (actionAPI == null) {
+            getLogger().info("cActions not found. Disabling plugin");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        // создание акшиона
+        actionAPI.registerAction(Action
+                .registrator()
+                .create("action-name")
+                .arguments("1arg", "2arg")
+                .onExecute(((arguments, context) -> {
+                    context.player().sendMessage(arguments.get("1arg", "default"));
+                    context.player().sendMessage(arguments.get("2arg", default"));
+                })
+                .build(), this);
+    }
 ```
+Исполнение акшиона
 
-Создание действий
+```yaml
+actions:
+  - "[message] ты прыгнул"
+  - "[particle] FLAME, 10, 0, 0, 0, 0.2"
+```
 ```java
-import ru.chipsonsky.actionssystem.action.Action;
+public final class JumpListener implements Listener {
 
-// создаем действие для логгирывания
-Action.registrator().create("log")
-    .argument("text") // 1 аргумент - text лога
-    .onExecute(((actionArguments, context) -> getLogger().info(actionArguments.get("text", "null")))) // получаем логгер и логгируем текст(который получаем из аргументов, null - деф значение если аргумент = null)
-    .register();
-
-// более сложный пример
-public void soundAction() {
-    Action.registrator().create("sound")
-            .arguments("type", "volume", "pitch")
-            .onExecute(((arguments, context) -> {
-                final Sound type = arguments.getParseEnum("type", "UI_BUTTON_CLICK", Sound.class);
-                final float volume = arguments.getParse("volume", float.class, "0.0");
-                final float pitch = arguments.getParse("pitch", float.class, "0.0");
-
-                context.getWorld().playSound(context.getLocation(), type, volume, pitch);
-            }))
-            .register();
+    private final FileConfiguration config;
+    private final ActionAPI actionAPI;
+    
+    public JumpListener(FileConfiguration config, ActionAPI actionAPI) {
+        this.config = config;
+    }
+    
+    @EventHandler
+    public void onJump(PlayerJumpEvent event) {
+        actionAPI.execute(config.getStringList("actions"), new ActionContext(event.getPlayer()));
+    }
 }
 ```
 
