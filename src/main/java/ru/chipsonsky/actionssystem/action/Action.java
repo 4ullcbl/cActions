@@ -4,14 +4,13 @@ package ru.chipsonsky.actionssystem.action;
 actions:
   - "[broadcast] Hello from action!"
   - "[command] kill @e"
+  - "[particle] FLAME, 1, 0, 0, 0, 0q"
  */
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.chipsonsky.actionssystem.action.arguments.ActionArguments;
 import ru.chipsonsky.actionssystem.action.context.ActionContext;
-import ru.chipsonsky.actionssystem.action.registry.ActionRegistry;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -20,9 +19,12 @@ import java.util.function.BiConsumer;
 public class Action {
     private final String name;
     private final List<String> arguments = new ArrayList<>();
-    @Setter private Set<String> aliases;
-    @Setter protected BiConsumer<ActionArguments, ActionContext> onExecute;
-    @Setter protected boolean cancelled = false;
+    @Setter
+    private Set<String> aliases;
+    @Setter
+    protected BiConsumer<ActionArguments, ActionContext> onExecute;
+    @Setter
+    protected boolean cancelled = false;
 
     public Action(String name, BiConsumer<ActionArguments, ActionContext> onExecute) {
         this.name = name.toLowerCase();
@@ -46,8 +48,8 @@ public class Action {
         arguments.add(argument);
     }
 
-    public static Register registrator() {
-        return new Register();
+    public static Builder registrator() {
+        return new Builder();
     }
 
     @Override
@@ -58,44 +60,44 @@ public class Action {
                 ;
     }
 
-    public static class Register {
+    public static class Builder {
         private String name;
         private final List<String> arguments = new ArrayList<>();
         private final Set<String> aliases = new HashSet<>();
         private BiConsumer<ActionArguments, ActionContext> onExecute;
 
-        public Register create(String name) {
+        public Builder create(String name) {
             this.name = name;
             return this;
         }
 
-        public Register argument(String arg) {
+        public Builder argument(String arg) {
             this.arguments.add(arg);
             return this;
         }
 
-        public Register arguments(String... args) {
+        public Builder arguments(String... args) {
             this.arguments.addAll(Arrays.asList(args));
             return this;
         }
 
-        public Register alias(String alias) {
+        public Builder alias(String alias) {
             this.aliases.add(alias);
             return this;
         }
 
-        public Register onExecute(BiConsumer<ActionArguments, ActionContext> consumer) {
+        public Builder onExecute(BiConsumer<ActionArguments, ActionContext> consumer) {
             this.onExecute = consumer;
             return this;
         }
 
-        public void register() {
-            final Action action = new Action(name, onExecute, aliases);
+        public Action build() {
+            final Action action = new Action(this.name, this.onExecute, this.aliases);
             for (String argument : arguments) {
                 action.argument(argument);
             }
 
-            ActionRegistry.ACTIONS.register(name, action);
+            return action;
         }
     }
 }

@@ -2,12 +2,9 @@ package ru.chipsonsky.actionssystem.commands.impl;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.chipsonsky.actionssystem.ActionSystem;
+import ru.chipsonsky.actionssystem.ActionPlugin;
 import ru.chipsonsky.actionssystem.action.Action;
 import ru.chipsonsky.actionssystem.action.context.ActionContext;
-import ru.chipsonsky.actionssystem.action.executor.api.ActionExecutor;
-import ru.chipsonsky.actionssystem.action.executor.impl.ActionExecutorImpl;
-import ru.chipsonsky.actionssystem.action.registry.ActionRegistry;
 import ru.chipsonsky.actionssystem.commands.api.ArgumentExecutor;
 import ru.chipsonsky.actionssystem.commands.api.TabCompleteArgumentExecutor;
 
@@ -33,7 +30,7 @@ public class ActionExecutorArgument extends ArgumentExecutor implements TabCompl
         }
 
         try {
-            ActionSystem.getExecutor().execute(actionStr.toString(), new ActionContext(player));
+            ActionPlugin.getActionAPI().executeAction(actionStr.toString(), new ActionContext(player));
         } catch (Exception e) {
             player.sendRichMessage("<red>Invalid syntax! <white>[action] arg1, arg2, arg3");
         }
@@ -44,12 +41,12 @@ public class ActionExecutorArgument extends ArgumentExecutor implements TabCompl
     public List<String> complete(CommandSender sender, String[] args) {
         if (args.length == 2) {
             final List<String> arguments = new ArrayList<>();
-            ActionRegistry.ACTIONS.entrySet().forEach(entry -> arguments.add("[" + entry.getKey() + "]"));
+            ActionPlugin.getActionAPI().allActions().forEach((key, value) -> arguments.add("[" + key + "]"));
             return arguments;
         }
 
         if (args.length > 2) {
-            final Action action = ActionRegistry.ACTIONS.get(args[1].substring(1, args[1].length() - 1));
+            final Action action = ActionPlugin.getActionAPI().parseAction(args[1]);
 
             if (action == null) return Collections.emptyList();
 

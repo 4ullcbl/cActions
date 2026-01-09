@@ -61,4 +61,3 @@ public final class JumpListener implements Listener {
     }
 }
 ```
-
