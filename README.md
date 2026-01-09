@@ -4,17 +4,20 @@ Simple text-actions system for bukkit plugins
 
 Execute action
 ```java
-ActionSystem.getExecutor().execute(actionStr.toString(), new ActionContext(player));
+final String actionString = "[command] say hello";  // полученно с конфига или из комманды
+
+ActionSystem.getExecutor().execute(actionString, new ActionContext(player));
+// действие срабатывает 
 ```
 
 Create Action
 ```java
-// this action logging text
+// создаем действие для логгирывания
 Action.registrator().create("log")
-    .argument("text")
-    .onExecute(((actionArguments, context) -> getLogger().info(actionArguments.get("text", "null"))))
+    .argument("text") // 1 аргумент - text лога
+    .onExecute(((actionArguments, context) -> getLogger().info(actionArguments.get("text", "null")))) // получаем логгер и логгируем текст(который получаем из аргументов, null - деф значение если аргумент = null)
     .register();
-
+// более сложный пример
 public void soundAction() {
     Action.registrator().create("sound")
             .arguments("type", "volume", "pitch")
