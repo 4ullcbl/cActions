@@ -22,10 +22,10 @@ public final class CActionsExample extends JavaPlugin {
 
         // создание акшиона
         actionAPI.registerAction(Action
-                .registrator()
-                .create("action-name")
-                .arguments("1arg", "2arg")
-                .onExecute(((arguments, context) -> {
+                .registrator() // .builder()
+                .create("action-name") // имя акшиона
+                .arguments("1arg", "2arg") // аргументы по порядку
+                .onExecute(((arguments, context) -> { // BiConsumer
                     context.player().sendMessage(arguments.get("1arg", "default"));
                     context.player().sendMessage(arguments.get("2arg", default"));
                 })
@@ -34,23 +34,29 @@ public final class CActionsExample extends JavaPlugin {
 ```
 Исполнение акшиона
 
+
+Конфиг или другое место с действиями
 ```yaml
 actions:
   - "[message] ты прыгнул"
   - "[particle] FLAME, 10, 0, 0, 0, 0.2"
 ```
+
 ```java
 public final class JumpListener implements Listener {
 
+    // получаем через констурктор апи и конфиг(который выше)
     private final FileConfiguration config;
     private final ActionAPI actionAPI;
     
     public JumpListener(FileConfiguration config, ActionAPI actionAPI) {
         this.config = config;
+        this.actionAPI = actionAPI;
     }
     
     @EventHandler
     public void onJump(PlayerJumpEvent event) {
+        // слушаем ивент прыжка и выполняем действие
         actionAPI.execute(config.getStringList("actions"), new ActionContext(event.getPlayer()));
     }
 }
