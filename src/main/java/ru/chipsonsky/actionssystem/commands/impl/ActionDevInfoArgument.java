@@ -4,8 +4,13 @@ import org.bukkit.command.CommandSender;
 import ru.chipsonsky.actionssystem.action.Action;
 import ru.chipsonsky.actionssystem.action.registry.ActionRegistry;
 import ru.chipsonsky.actionssystem.commands.api.ArgumentExecutor;
+import ru.chipsonsky.actionssystem.commands.api.TabCompleteArgumentExecutor;
 
-public class ActionDevInfoArgument extends ArgumentExecutor {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ActionDevInfoArgument extends ArgumentExecutor implements TabCompleteArgumentExecutor {
 
     public ActionDevInfoArgument(String name) {
         super(name);
@@ -24,5 +29,17 @@ public class ActionDevInfoArgument extends ArgumentExecutor {
         }
 
         sender.sendRichMessage("<yellow>" + action.getName() + "<white>: {\n" + action + "\n}");
+    }
+
+
+    @Override
+    public List<String> complete(CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            final List<String> arguments = new ArrayList<>();
+            ActionRegistry.ACTIONS.entrySet().forEach(entry -> arguments.add(entry.getKey()));
+            return arguments;
+        }
+
+        return Collections.emptyList();
     }
 }

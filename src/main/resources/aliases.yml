@@ -6,3 +6,6 @@ log:
 
 broadcast:
   - "server-msg"
+
+message:
+  - "msg"

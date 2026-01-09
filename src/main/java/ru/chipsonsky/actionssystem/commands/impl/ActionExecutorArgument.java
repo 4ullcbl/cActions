@@ -1,6 +1,8 @@
 package ru.chipsonsky.actionssystem.commands.impl;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import ru.chipsonsky.actionssystem.ActionSystem;
 import ru.chipsonsky.actionssystem.action.Action;
 import ru.chipsonsky.actionssystem.action.context.ActionContext;
 import ru.chipsonsky.actionssystem.action.executor.api.ActionExecutor;
@@ -21,14 +23,20 @@ public class ActionExecutorArgument extends ArgumentExecutor implements TabCompl
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player))
+            return;
+
         final StringBuilder actionStr = new StringBuilder();
 
         for (int i = 1; i < args.length; i++) {
             actionStr.append(" ").append(args[i]);
         }
 
-        final ActionExecutor executor = new ActionExecutorImpl();
-        executor.execute(actionStr.toString(), new ActionContext(){});
+        try {
+            ActionSystem.getExecutor().execute(actionStr.toString(), new ActionContext(player));
+        } catch (Exception e) {
+            player.sendRichMessage("<red>Invalid syntax! <white>[action] arg1, arg2, arg3");
+        }
 
     }
 
