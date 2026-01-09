@@ -1,31 +1,63 @@
 # cActions
-Simple text-actions system for bukkit plugins
+Простая система текстовых действий, можно использывать в конфигах, для более настраивамой работы плагинов
+Основной синтаксис: ```[имя-действия] 1 аргумент, 2 аргумент```
+Аргументы раздяляются запятой с пробелом, что позволяет аргументу иметь пробелы
 
-
-Execute action
+настройка проекта
 ```java
-ActionSystem.getExecutor().execute(actionStr.toString(), new ActionContext(player));
+public final class CActionsExample extends JavaPlugin {
+
+    private ActionAPI actionAPI; // основной обьект для работы а API
+
+    @Override
+    public void onEnable() {
+
+        actionAPI = getServer().getServicesManager().load(ActionAPI.class);
+
+        if (actionAPI == null) {
+            getLogger().info("cActions not found. Disabling plugin");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        // создание акшиона
+        actionAPI.registerAction(Action
+                .registrator() // .builder()
+                .create("action-name") // имя акшиона
+                .arguments("1arg", "2arg") // аргументы по порядку
+                .onExecute(((arguments, context) -> { // BiConsumer
+                    context.player().sendMessage(arguments.get("1arg", "default"));
+                    context.player().sendMessage(arguments.get("2arg", default"));
+                })
+                .build(), this);
+    }
+```
+Исполнение акшиона
+
+
+Конфиг или другое место с действиями
+```yaml
+actions:
+  - "[message] ты прыгнул"
+  - "[particle] FLAME, 10, 0, 0, 0, 0.2"
 ```
 
-Create Action
 ```java
-// this action logging text
-Action.registrator().create("log")
-    .argument("text")
-    .onExecute(((actionArguments, context) -> getLogger().info(actionArguments.get("text", "null"))))
-    .register();
+public final class JumpListener implements Listener {
 
-public void soundAction() {
-    Action.registrator().create("sound")
-            .arguments("type", "volume", "pitch")
-            .onExecute(((arguments, context) -> {
-                final Sound type = arguments.getParseEnum("type", "UI_BUTTON_CLICK", Sound.class);
-                final float volume = arguments.getParse("volume", float.class, "0.0");
-                final float pitch = arguments.getParse("pitch", float.class, "0.0");
-
-                context.getWorld().playSound(context.getLocation(), type, volume, pitch);
-            }))
-            .register();
+    // получаем через констурктор апи и конфиг(который выше)
+    private final FileConfiguration config;
+    private final ActionAPI actionAPI;
+    
+    public JumpListener(FileConfiguration config, ActionAPI actionAPI) {
+        this.config = config;
+        this.actionAPI = actionAPI;
+    }
+    
+    @EventHandler
+    public void onJump(PlayerJumpEvent event) {
+        // слушаем ивент прыжка и выполняем действие
+        actionAPI.execute(config.getStringList("actions"), new ActionContext(event.getPlayer()));
+    }
 }
 ```
-
