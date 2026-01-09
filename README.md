@@ -1,8 +1,8 @@
 # cActions
-Simple text-actions system for bukkit plugins
+Простая система текстовых действий, можно использывать в конфигах, для более настраивамой работы плагинов
 
 
-Execute action
+Выполнение действия
 ```java
 final String actionString = "[command] say hello";  // полученно с конфига или из комманды
 
@@ -10,13 +10,16 @@ ActionSystem.getExecutor().execute(actionString, new ActionContext(player));
 // действие срабатывает 
 ```
 
-Create Action
+Создание действий
 ```java
+import ru.chipsonsky.actionssystem.action.Action;
+
 // создаем действие для логгирывания
 Action.registrator().create("log")
     .argument("text") // 1 аргумент - text лога
     .onExecute(((actionArguments, context) -> getLogger().info(actionArguments.get("text", "null")))) // получаем логгер и логгируем текст(который получаем из аргументов, null - деф значение если аргумент = null)
     .register();
+
 // более сложный пример
 public void soundAction() {
     Action.registrator().create("sound")
