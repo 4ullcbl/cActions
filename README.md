@@ -1,5 +1,5 @@
 <h1 align="center">cActions</h1> 
-<h1 align="center">[![](https://www.jitpack.io/v/4ullcbl/cActions.svg)](https://www.jitpack.io/#4ullcbl/cActions)</h1>
+<center>[![](https://www.jitpack.io/v/4ullcbl/cActions.svg)](https://www.jitpack.io/#4ullcbl/cActions)</center>
 
 Простая система текстовых действий, можно использывать в конфигах, для более настраивамой работы плагинов
 Основной синтаксис: ```[имя-действия] 1 аргумент, 2 аргумент```
